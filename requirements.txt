@@ -20,3 +20,4 @@ pdfplumber
 pypdf
 python-docx
 werkzeug
+gunicorn
