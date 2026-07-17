@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block title %}Match Rankings — {{ job.title }} | ResumeAI{% endblock %}
+
+{% block body %}
+<div class="app-container" style="display:flex; padding-top:70px;">
+    {% include 'components/_sidebar.html' %}
+    <main class="main-content" style="flex:1; padding:2rem;">
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+            <div>
+                <a href="/matching" style="color:var(--text-muted); text-decoration:none; font-size:0.85rem;"><i class="bi bi-arrow-left me-1"></i>Matching Hub</a>
+                <h1 style="font-size:1.5rem; font-weight:700; margin:0.5rem 0 0;">Candidate Rankings</h1>
+                <p style="color:var(--text-muted); margin:0; font-size:0.85rem;">{{ job.title }} @ {{ job.company or 'Unknown' }}</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="/matching/compare/{{ job.id }}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-columns me-1"></i>Compare Top 3
+                </a>
+                <a href="/matching/export/{{ job.id }}" class="btn btn-outline-success btn-sm">
+                    <i class="bi bi-download me-1"></i>Export CSV
+                </a>
+            </div>
+        </div>
+
+        {% include 'components/_flash_messages.html' %}
+
+        {% if matches %}
+        <!-- Score Summary Cards -->
+        <div class="row g-3 mb-4">
+            {% set top = matches[0] %}
+            <div class="col-md-4">
+                <div class="glass-card p-3 text-center">
+                    <div style="font-size:2rem; font-weight:800;" class="text-gradient">{{ '%.0f'|format(top.overall_score|float) }}%</div>
+                    <small style="color:var(--text-muted);">Top Score</small>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-card p-3 text-center">
+                    <div style="font-size:2rem; font-weight:800;" class="text-gradient">{{ matches|length }}</div>
+                    <small style="color:var(--text-muted);">Total Candidates</small>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-card p-3 text-center">
+                    {% set avg = (matches|map(attribute='overall_score')|map('float')|sum / matches|length)|round(1) %}
+                    <div style="font-size:2rem; font-weight:800;" class="text-gradient">{{ avg }}%</div>
+                    <small style="color:var(--text-muted);">Average Score</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rankings Table -->
+        <div class="glass-card p-0" style="overflow:hidden;">
+            <div class="table-responsive">
+                <table class="table table-borderless align-middle mb-0" id="ranking-table" style="color:var(--text-primary);">
+                    <thead style="background:var(--bg-tertiary);">
+                        <tr style="color:var(--text-muted); font-size:0.78rem; text-transform:uppercase; letter-spacing:0.05em;">
+                            <th class="ps-4 py-3" onclick="sortRankingTable(0)" style="cursor:pointer;">Rank</th>
+                            <th class="py-3" onclick="sortRankingTable(1)" style="cursor:pointer;">Candidate</th>
+                            <th class="py-3" onclick="sortRankingTable(2)" style="cursor:pointer;">ATS Score ↕</th>
+                            <th class="py-3">Skill Match</th>
+                            <th class="py-3">Semantic Sim.</th>
+                            <th class="py-3">Missing Skills</th>
+                            <th class="py-3 pe-4">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for m in matches %}
+                        {% set rank = loop.index %}
+                        {% set score = m.overall_score|float %}
+                        {% set resume = m.resume %}
+                        <tr style="border-bottom:1px solid var(--card-border);" class="{% if rank <= 3 %}table-row-highlight{% endif %}">
+                            <td class="ps-4">
+                                <div style="width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.8rem;
+                                    background:{% if rank == 1 %}linear-gradient(135deg,#f59e0b,#fbbf24){% elif rank == 2 %}linear-gradient(135deg,#94a3b8,#cbd5e1){% elif rank == 3 %}linear-gradient(135deg,#b45309,#d97706){% else %}var(--bg-tertiary){% endif %};
+                                    color:{% if rank <= 3 %}#000{% else %}var(--text-muted){% endif %};">
+                                    {{ rank }}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div style="width:34px;height:34px;border-radius:50%;background:var(--primary-gradient);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.8rem;flex-shrink:0;">
+                                        {{ (resume.candidate_name or 'U')[0]|upper if resume }}
+                                    </div>
+                                    <div>
+                                        <div style="font-weight:600; font-size:0.88rem;">{{ resume.candidate_name if resume else 'Unknown' }}</div>
+                                        <small style="color:var(--text-muted);">{{ resume.parsed_email if resume else '' }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div style="width:60px;height:6px;background:var(--bg-tertiary);border-radius:3px;overflow:hidden;">
+                                        <div style="height:100%;width:{{ score }}%;background:{% if score >= 75 %}#10b981{% elif score >= 50 %}#f59e0b{% else %}#ef4444{% endif %};border-radius:3px;"></div>
+                                    </div>
+                                    <span style="font-weight:700; color:{% if score >= 75 %}#10b981{% elif score >= 50 %}#f59e0b{% else %}#ef4444{% endif %};">{{ '%.0f'|format(score) }}%</span>
+                                </div>
+                            </td>
+                            <td><span style="color:var(--text-secondary);">{{ '%.0f'|format(m.skill_match_pct|float) }}%</span></td>
+                            <td><span style="color:var(--text-muted);">{{ '%.2f'|format(m.semantic_similarity|float) }}</span></td>
+                            <td>
+                                {% for s in (m.missing_skills or [])[:2] %}
+                                <span class="skill-chip missing" style="font-size:0.72rem;">{{ s }}</span>
+                                {% endfor %}
+                                {% if (m.missing_skills or [])|length > 2 %}
+                                <span style="color:var(--text-muted); font-size:0.75rem;">+{{ (m.missing_skills|length) - 2 }}</span>
+                                {% endif %}
+                            </td>
+                            <td class="pe-4">
+                                <a href="/matching/detail/{{ m.id }}" class="btn btn-primary-gradient btn-sm">
+                                    <i class="bi bi-zoom-in me-1"></i>Details
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        {% else %}
+        <div class="glass-card p-5 text-center">
+            <i class="bi bi-bullseye" style="font-size:4rem; color:var(--text-muted);"></i>
+            <h4 style="margin-top:1rem; font-weight:600;">No Matches Yet</h4>
+            <p style="color:var(--text-secondary);">Run the matching engine to rank candidates against this job.</p>
+            <form method="POST" action="/matching/run" class="d-inline">
+                <input type="hidden" name="job_id" value="{{ job.id }}">
+                <button type="submit" class="btn btn-primary-gradient px-5">
+                    <i class="bi bi-play-fill me-2"></i>Run Matching Engine
+                </button>
+            </form>
+        </div>
+        {% endif %}
+    </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/matching.js') }}"></script>
+{% endblock %}

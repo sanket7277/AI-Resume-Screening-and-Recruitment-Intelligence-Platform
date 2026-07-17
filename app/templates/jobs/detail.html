@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}{{ job.title }} — ResumeAI{% endblock %}
+
+{% block body %}
+<div class="app-container" style="display:flex; padding-top:70px;">
+    {% include 'components/_sidebar.html' %}
+    <main class="main-content" style="flex:1; padding:2rem;">
+        <div class="mb-3">
+            <a href="/jobs" style="color:var(--text-muted); text-decoration:none; font-size:0.85rem;"><i class="bi bi-arrow-left me-1"></i>All Jobs</a>
+        </div>
+
+        {% include 'components/_flash_messages.html' %}
+
+        <!-- Job Header -->
+        <div class="glass-card p-4 mb-4">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+                <div>
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <span class="badge {% if job.is_active %}bg-success{% else %}bg-secondary{% endif %}">{{ 'Active' if job.is_active else 'Closed' }}</span>
+                        {% if job.employment_type %}<span class="badge bg-primary bg-opacity-25" style="color:#818cf8;">{{ job.employment_type }}</span>{% endif %}
+                    </div>
+                    <h1 style="font-size:1.6rem; font-weight:800; margin:0.3rem 0;">{{ job.title }}</h1>
+                    <div class="d-flex flex-wrap gap-3 mt-2" style="color:var(--text-muted); font-size:0.85rem;">
+                        {% if job.company %}<span><i class="bi bi-building me-1"></i>{{ job.company }}</span>{% endif %}
+                        {% if job.department %}<span><i class="bi bi-diagram-3 me-1"></i>{{ job.department }}</span>{% endif %}
+                        {% if job.location %}<span><i class="bi bi-geo-alt me-1"></i>{{ job.location }}</span>{% endif %}
+                        {% if job.min_experience %}<span><i class="bi bi-clock me-1"></i>{{ job.min_experience }}+ years</span>{% endif %}
+                        {% if job.salary_min and job.salary_max %}
+                        <span><i class="bi bi-cash me-1"></i>${{ '{:,}'.format(job.salary_min) }}–${{ '{:,}'.format(job.salary_max) }}/yr</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% if current_user.role in ['admin','recruiter'] and (current_user.role == 'admin' or job.created_by == current_user.id) %}
+                <div class="d-flex gap-2">
+                    <a href="/jobs/{{ job.id }}/edit" class="btn btn-outline-secondary btn-sm"><i class="bi bi-pencil me-1"></i>Edit</a>
+                    <a href="/matching/results/{{ job.id }}" class="btn btn-primary-gradient btn-sm"><i class="bi bi-bullseye me-1"></i>View Rankings</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <!-- Description -->
+                <div class="glass-card p-4 mb-3">
+                    <h6 style="font-weight:600; margin-bottom:1rem;">Job Description</h6>
+                    <div style="color:var(--text-secondary); font-size:0.9rem; line-height:1.8; white-space:pre-wrap;">{{ job.description }}</div>
+                </div>
+
+                {% if job.requirements %}
+                <div class="glass-card p-4">
+                    <h6 style="font-weight:600; margin-bottom:1rem;">Requirements & Qualifications</h6>
+                    <div style="color:var(--text-secondary); font-size:0.9rem; line-height:1.8; white-space:pre-wrap;">{{ job.requirements }}</div>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="col-lg-4">
+                <!-- Required Skills -->
+                {% if job.required_skills %}
+                <div class="glass-card p-4 mb-3">
+                    <h6 style="font-weight:600; margin-bottom:1rem;"><i class="bi bi-code-slash me-2 text-primary"></i>Required Skills</h6>
+                    {% for skill in job.required_skills %}
+                    <span class="skill-chip">{{ skill }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Candidate Rankings -->
+                {% if current_user.role in ['recruiter', 'admin'] %}
+                <div class="glass-card p-4 mb-3">
+                    <h6 style="font-weight:600; margin-bottom:1rem;"><i class="bi bi-trophy me-2 text-warning"></i>Top Matches</h6>
+                    {% if matches %}
+                    {% for m in matches[:5] %}
+                    <div class="d-flex justify-content-between align-items-center mb-2 pb-2" style="border-bottom: 1px solid var(--card-border);">
+                        <div>
+                            <div style="font-weight:500; font-size:0.88rem;">{{ m.resume.candidate_name if m.resume else 'Unknown' }}</div>
+                        </div>
+                        {% set score = m.overall_score|float %}
+                        <span class="badge {% if score >= 75 %}bg-success{% elif score >= 50 %}bg-warning text-dark{% else %}bg-danger{% endif %}">{{ '%.0f'|format(score) }}%</span>
+                    </div>
+                    {% endfor %}
+                    <a href="/matching/results/{{ job.id }}" class="btn btn-primary-gradient btn-sm w-100 mt-2">View All Rankings</a>
+                    {% else %}
+                    <p style="color:var(--text-muted); font-size:0.88rem;">No matches run yet.</p>
+                    <form method="POST" action="/matching/run">
+                        <input type="hidden" name="job_id" value="{{ job.id }}">
+                        <button type="submit" class="btn btn-primary-gradient btn-sm w-100">Run Match Engine</button>
+                    </form>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <!-- Meta -->
+                <div class="glass-card p-4">
+                    <h6 style="font-weight:600; margin-bottom:1rem;"><i class="bi bi-info-circle me-2" style="color:#06b6d4;"></i>Details</h6>
+                    <table class="table table-borderless mb-0" style="color:var(--text-secondary); font-size:0.85rem;">
+                        <tr><td style="color:var(--text-muted); padding:4px 0;">Posted</td><td>{{ job.created_at.strftime('%b %d, %Y') if job.created_at }}</td></tr>
+                        {% if job.education_required %}
+                        <tr><td style="color:var(--text-muted); padding:4px 0;">Education</td><td>{{ job.education_required }}</td></tr>
+                        {% endif %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

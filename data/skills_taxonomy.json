@@ -1,0 +1,94 @@
+{
+  "programming_languages": [
+    "Python", "Java", "JavaScript", "C++", "C#", "Ruby", "Go", "Rust", "Swift", "Kotlin", 
+    "TypeScript", "PHP", "R", "MATLAB", "Scala", "Perl", "Haskell", "Dart", "Lua", "Julia", 
+    "Objective-C", "Assembly", "Shell", "Bash", "PowerShell", "SQL", "PL/SQL", "T-SQL", 
+    "Groovy", "Clojure", "Elixir", "Erlang", "F#", "COBOL", "Fortran", "ABAP", "VB.NET", "Delphi"
+  ],
+  "web_frameworks": [
+    "React", "Angular", "Vue.js", "Django", "Flask", "Spring Boot", "Express.js", "Node.js", 
+    "Next.js", "Nuxt.js", "Ruby on Rails", "Laravel", "ASP.NET", "FastAPI", "Svelte", 
+    "Gatsby", "Ember.js", "Backbone.js", "Meteor", "Strapi", "Symphony", "CodeIgniter", 
+    "Ember", "Fastify", "Koa", "Play Framework"
+  ],
+  "databases": [
+    "MySQL", "PostgreSQL", "MongoDB", "Redis", "Cassandra", "SQLite", "Oracle", "SQL Server", 
+    "DynamoDB", "Firebase", "Elasticsearch", "Neo4j", "CouchDB", "MariaDB", "InfluxDB", 
+    "Memcached", "Couchbase", "HBase", "Snowflake", "BigQuery", "Redshift", "Dynamo"
+  ],
+  "cloud_platforms": [
+    "AWS", "Azure", "Google Cloud", "GCP", "Heroku", "DigitalOcean", "IBM Cloud", 
+    "Oracle Cloud", "Alibaba Cloud", "Cloudflare", "OpenStack", "AWS EC2", "AWS S3", 
+    "Lambda", "RDS", "ECS", "EKS"
+  ],
+  "devops_tools": [
+    "Docker", "Kubernetes", "Jenkins", "GitHub Actions", "GitLab CI", "Terraform", "Ansible", 
+    "Chef", "Puppet", "Vagrant", "CircleCI", "Travis CI", "ArgoCD", "Helm", "Prometheus", 
+    "Grafana", "Nagios", "ELK Stack", "Datadog", "New Relic", "Maven", "Gradle", "Nginx", "Apache"
+  ],
+  "data_science": [
+    "Pandas", "NumPy", "Scikit-learn", "TensorFlow", "PyTorch", "Keras", "XGBoost", "LightGBM", 
+    "Matplotlib", "Seaborn", "Plotly", "SciPy", "NLTK", "spaCy", "Hugging Face", "OpenCV", 
+    "Spark MLlib", "Statsmodels", "SHAP", "Jupyter", "R Studio", "Tableau", "Power BI", 
+    "Apache Spark", "Hadoop", "Airflow", "Kafka", "Flink", "Dask", "Rapids", "MLflow", 
+    "Prefect", "Streamlit", "Gradio"
+  ],
+  "ai_ml": [
+    "Machine Learning", "Deep Learning", "Natural Language Processing", "Computer Vision", 
+    "Reinforcement Learning", "Neural Networks", "CNN", "RNN", "LSTM", "Transformers", 
+    "GANs", "Transfer Learning", "Feature Engineering", "Model Deployment", "MLOps", 
+    "AutoML", "Federated Learning", "NER", "Sentiment Analysis", "Object Detection", 
+    "Image Classification", "Text Classification", "Recommendation Systems", "Time Series Analysis", 
+    "Anomaly Detection", "LLM", "Generative AI", "RAG", "Fine-tuning", "Prompt Engineering"
+  ],
+  "mobile_development": [
+    "React Native", "Flutter", "SwiftUI", "Jetpack Compose", "Xamarin", "Ionic", 
+    "Android SDK", "iOS SDK", "CocoaPods", "Gradle", "Xcode", "Android Studio"
+  ],
+  "testing": [
+    "Selenium", "JUnit", "pytest", "Jest", "Mocha", "Cypress", "TestNG", "Cucumber", 
+    "Postman", "JMeter", "LoadRunner", "Appium", "Robot Framework", "unittest", "Mockito", 
+    "Playwright", "Selenium WebDriver"
+  ],
+  "version_control": [
+    "Git", "GitHub", "GitLab", "Bitbucket", "SVN", "Mercurial"
+  ],
+  "operating_systems": [
+    "Linux", "Ubuntu", "CentOS", "Red Hat", "Windows Server", "macOS", "Unix", "Debian"
+  ],
+  "networking": [
+    "TCP/IP", "DNS", "HTTP", "HTTPS", "REST", "GraphQL", "gRPC", "WebSockets", "MQTT", 
+    "AMQP", "Sockets", "VPN", "Routing", "Switching"
+  ],
+  "security": [
+    "OWASP", "SSL/TLS", "OAuth", "JWT", "Encryption", "Penetration Testing", "SIEM", 
+    "Firewall", "IAM", "SSO", "SAML", "LDAP", "Cybersecurity", "Ethical Hacking", 
+    "Cryptography", "Vulnerability Assessment"
+  ],
+  "project_management": [
+    "Agile", "Scrum", "Kanban", "JIRA", "Trello", "Asana", "Confluence", "Notion", 
+    "Monday.com", "Basecamp", "MS Project", "PMP", "SDLC"
+  ],
+  "design_tools": [
+    "Figma", "Sketch", "Adobe XD", "Photoshop", "Illustrator", "InVision", "Zeplin", "Canva"
+  ],
+  "soft_skills": [
+    "Leadership", "Communication", "Teamwork", "Problem Solving", "Critical Thinking", 
+    "Time Management", "Adaptability", "Creativity", "Attention to Detail", "Collaboration", 
+    "Analytical Thinking", "Decision Making", "Presentation Skills", "Mentoring", 
+    "Strategic Planning", "Active Listening", "Negotiation", "Conflict Resolution", 
+    "Emotional Intelligence", "Interpersonal Skills"
+  ],
+  "certifications_keywords": [
+    "AWS Certified", "Azure Certified", "Google Cloud Certified", "PMP", "Scrum Master", 
+    "CISSP", "CompTIA", "CCNA", "CCNP", "CKA", "CKAD", "Terraform Associate", 
+    "Docker Certified", "Kubernetes Certified", "Six Sigma", "ITIL", "TOGAF", 
+    "Oracle Certified", "Salesforce Certified"
+  ],
+  "frontend_technologies": [
+    "HTML", "HTML5", "CSS", "CSS3", "SASS", "LESS", "Bootstrap", "Tailwind CSS", 
+    "Material UI", "jQuery", "Webpack", "Babel", "Vite", "Parcel", "npm", "Yarn", 
+    "pnpm", "Storybook", "Responsive Design", "Cross-Browser Compatibility", 
+    "Web Accessibility", "SEO", "PWA", "DOM Manipulation", "AJAX", "XML", "JSON"
+  ]
+}

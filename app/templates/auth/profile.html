@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}My Profile — ResumeAI{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">{% endblock %}
+
+{% block body %}
+<div class="app-container" style="display:flex; padding-top:70px;">
+    {% include 'components/_sidebar.html' %}
+    <main class="main-content" style="flex:1; padding:2rem;">
+        <div class="mb-4">
+            <h1 style="font-size:1.5rem; font-weight:700; margin:0;">My Profile</h1>
+            <p style="color:var(--text-muted); margin:0; font-size:0.85rem;">Manage your account information</p>
+        </div>
+
+        {% include 'components/_flash_messages.html' %}
+
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="glass-card p-4 text-center">
+                    <div style="width:80px;height:80px;border-radius:50%;background:var(--primary-gradient);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:2rem;margin:0 auto 1rem;">
+                        {{ current_user.username[0]|upper }}
+                    </div>
+                    <h5 style="font-weight:700; margin:0;">{{ current_user.username }}</h5>
+                    <p style="color:var(--text-muted); font-size:0.85rem; margin:0.3rem 0 0.8rem;">{{ current_user.email }}</p>
+                    <span class="badge bg-primary bg-opacity-25 px-3 py-2" style="color:#818cf8;">{{ current_user.role|capitalize }}</span>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="glass-card p-4 mb-3">
+                    <h6 style="font-weight:600; margin-bottom:1.5rem;">Personal Information</h6>
+                    <form method="POST" action="/auth/profile">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label" style="color:var(--text-secondary); font-size:0.85rem; font-weight:500;">First Name</label>
+                                <input type="text" name="first_name" class="form-control input-custom" value="{{ current_user.first_name or '' }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" style="color:var(--text-secondary); font-size:0.85rem; font-weight:500;">Last Name</label>
+                                <input type="text" name="last_name" class="form-control input-custom" value="{{ current_user.last_name or '' }}">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" style="color:var(--text-secondary); font-size:0.85rem; font-weight:500;">Department</label>
+                                <input type="text" name="department" class="form-control input-custom" value="{{ current_user.department or '' }}" placeholder="e.g. Engineering">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" style="color:var(--text-secondary); font-size:0.85rem; font-weight:500;">Bio</label>
+                                <textarea name="bio" class="form-control input-custom" rows="3" placeholder="A short bio about yourself...">{{ current_user.bio or '' }}</textarea>
+                            </div>
+                        </div>
+                        <hr style="border-color:var(--card-border); margin:1.5rem 0;">
+                        <h6 style="font-weight:600; margin-bottom:1rem;">Change Password <span style="color:var(--text-muted); font-weight:400; font-size:0.8rem;">(leave blank to keep current)</span></h6>
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label" style="color:var(--text-secondary); font-size:0.85rem; font-weight:500;">Current Password</label>
+                                <input type="password" name="current_password" class="form-control input-custom">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label" style="color:var(--text-secondary); font-size:0.85rem; font-weight:500;">New Password</label>
+                                <input type="password" name="new_password" class="form-control input-custom">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary-gradient px-5 py-2" style="font-weight:600;">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

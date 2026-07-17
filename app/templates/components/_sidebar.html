@@ -1,0 +1,38 @@
+<!-- Sidebar component for dashboard pages -->
+<aside id="app-sidebar" class="glass-card" style="width:250px; min-height:calc(100vh - 70px); padding:1.5rem 0; position:sticky; top:70px; flex-shrink:0; border-radius:0; border-right:1px solid var(--card-border); border-top:none; border-bottom:none; border-left:none;">
+    
+    <div class="px-3 mb-3">
+        <small class="text-uppercase fw-semibold" style="color:var(--text-muted); letter-spacing:0.08em; font-size:0.7rem;">Navigation</small>
+    </div>
+
+    <ul class="nav flex-column">
+        {% if current_user.is_authenticated %}
+
+        {# Admin Menu #}
+        {% if current_user.role == 'admin' %}
+        <li class="nav-item"><a class="nav-link px-3 py-2" href="/dashboard" style="color:var(--text-secondary);"><i class="bi bi-grid-1x2 me-2"></i>Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link px-3 py-2" href="/admin/users" style="color:var(--text-secondary);"><i class="bi bi-people me-2"></i>Users</a></li>
+        <li class="nav-item"><a class="nav-link px-3 py-2" href="/resume" style="color:var(--text-secondary);"><i class="bi bi-file-earmark-text me-2"></i>All Resumes</a></li>
+        <li class="nav-item"><a class="nav-link px-3 py-2" href="/jobs" style="color:var(--text-secondary);"><i class="bi bi-briefcase me-2"></i>All Jobs</a></li>
+        <li class="nav-item"><a class="nav-link px-3 py-2" href="/analytics" style="color:var(--text-secondary);"><i class="bi bi-bar-chart me-2"></i>Analytics</a></li>
+        <li class="nav-item"><a class="nav-link px-3 py-2" href="/admin/settings" style="color:var(--text-secondary);"><i class="bi bi-gear me-2"></i>Settings</a></li>
+
+        {# Recruiter Menu #}
+        {% elif current_user.role == 'recruiter' %}
+        <li class="nav-item"><a class="nav-link px-3 py-2" href="/dashboard" style="color:var(--text-secondary);"><i class="bi bi-grid-1x2 me-2"></i>Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link px-3 py-2" href="/jobs" style="color:var(--text-secondary);"><i class="bi bi-briefcase me-2"></i>My Jobs</a></li>
+        <li class="nav-item"><a class="nav-link px-3 py-2" href="/resume" style="color:var(--text-secondary);"><i class="bi bi-people me-2"></i>Candidates</a></li>
+        <li class="nav-item"><a class="nav-link px-3 py-2" href="/matching" style="color:var(--text-secondary);"><i class="bi bi-bullseye me-2"></i>Matching</a></li>
+        <li class="nav-item"><a class="nav-link px-3 py-2" href="/analytics" style="color:var(--text-secondary);"><i class="bi bi-bar-chart me-2"></i>Analytics</a></li>
+
+        {# Candidate Menu #}
+        {% else %}
+        <li class="nav-item"><a class="nav-link px-3 py-2" href="/dashboard" style="color:var(--text-secondary);"><i class="bi bi-grid-1x2 me-2"></i>Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link px-3 py-2" href="/resume" style="color:var(--text-secondary);"><i class="bi bi-file-earmark-person me-2"></i>My Resumes</a></li>
+
+        <li class="nav-item"><a class="nav-link px-3 py-2" href="/auth/profile" style="color:var(--text-secondary);"><i class="bi bi-person me-2"></i>Profile</a></li>
+        {% endif %}
+
+        {% endif %}
+    </ul>
+</aside>

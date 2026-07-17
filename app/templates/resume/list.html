@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}Candidates — ResumeAI{% endblock %}
+
+{% block body %}
+<div class="app-container" style="display:flex; padding-top:70px;">
+    {% include 'components/_sidebar.html' %}
+    <main class="main-content" style="flex:1; padding:2rem;">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 style="font-size:1.5rem; font-weight:700; margin:0;">
+                    {% if current_user.role in ['admin','recruiter'] %}All Candidates{% else %}My Resumes{% endif %}
+                </h1>
+                <p style="color:var(--text-muted); margin:0; font-size:0.85rem;">{{ pagination.total }} resume{{ 's' if pagination.total != 1 }}</p>
+            </div>
+            <a href="/resume/upload" class="btn btn-primary-gradient btn-sm px-4">
+                <i class="bi bi-upload me-1"></i>Upload Resume
+            </a>
+        </div>
+
+        {% include 'components/_flash_messages.html' %}
+
+        <!-- Search Bar -->
+        <div class="mb-4">
+            <div class="input-group" style="max-width:400px;">
+                <span class="input-group-text" style="background:var(--bg-tertiary); border:1px solid var(--card-border); border-right:none;">
+                    <i class="bi bi-search" style="color:var(--text-muted);"></i>
+                </span>
+                <input type="text" id="candidate-search" class="form-control" placeholder="Search candidates or skills..." style="background:var(--bg-tertiary); border:1px solid var(--card-border); border-left:none; color:var(--text-primary);">
+            </div>
+            <div id="search-results" class="mt-2"></div>
+        </div>
+
+        {% if resumes %}
+        <div class="row g-3">
+            {% for r in resumes %}
+            <div class="col-md-6 col-xl-4">
+                <div class="glass-card p-4 h-100 resume-card" style="transition: transform 0.2s, box-shadow 0.2s;">
+                    <div class="d-flex align-items-start gap-3 mb-3">
+                        <div style="width:46px;height:46px;border-radius:12px;background:var(--primary-gradient);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1.1rem;flex-shrink:0;">
+                            {{ (r.candidate_name or 'U')[0]|upper }}
+                        </div>
+                        <div class="flex-grow-1 min-width-0">
+                            <h6 style="font-weight:600; margin:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ r.candidate_name or 'Unnamed' }}</h6>
+                            <small style="color:var(--text-muted);">{{ r.parsed_email or 'No email extracted' }}</small>
+                        </div>
+                        <span class="badge {% if r.status == 'analyzed' %}bg-success{% elif r.status == 'pending' %}bg-warning text-dark{% else %}bg-danger{% endif %}">{{ r.status }}</span>
+                    </div>
+
+                    <!-- Skills Preview -->
+                    {% if r.skills %}
+                    <div class="mb-3">
+                        {% for skill in (r.skills or [])[:4] %}
+                        <span class="skill-chip">{{ skill }}</span>
+                        {% endfor %}
+                        {% if (r.skills or [])|length > 4 %}
+                        <span class="skill-chip" style="opacity:0.6;">+{{ (r.skills|length) - 4 }}</span>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    <div class="d-flex justify-content-between align-items-center" style="font-size:0.8rem; color:var(--text-muted); margin-bottom:1rem;">
+                        <span><i class="bi bi-clock me-1"></i>{{ r.experience_years or 0 }} yrs exp</span>
+                        <span><i class="bi bi-mortarboard me-1"></i>{{ r.education_level or 'Unknown' }}</span>
+                        <span><i class="bi bi-file-earmark me-1"></i>{{ r.file_type|upper }}</span>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <a href="/resume/view/{{ r.id }}" class="btn btn-primary-gradient btn-sm flex-grow-1">
+                            <i class="bi bi-eye me-1"></i>View
+                        </a>
+                        {% if current_user.role in ['admin', 'recruiter'] or r.user_id == current_user.id %}
+                        <form method="POST" action="/resume/delete/{{ r.id }}" class="d-inline" onsubmit="return confirm('Delete this resume?');">
+                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if pagination.pages > 1 %}
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% for page_num in pagination.iter_pages(left_edge=2, right_edge=2, left_current=2, right_current=2) %}
+                {% if page_num %}
+                <li class="page-item {% if page_num == pagination.page %}active{% endif %}">
+                    <a class="page-link" href="?page={{ page_num }}" style="background:var(--bg-tertiary); border-color:var(--card-border); color:var(--text-primary);">{{ page_num }}</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled"><span class="page-link" style="background:var(--bg-tertiary); border-color:var(--card-border); color:var(--text-muted);">…</span></li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+        </nav>
+        {% endif %}
+
+        {% else %}
+        <div class="glass-card p-5 text-center">
+            <i class="bi bi-people" style="font-size:4rem; color:var(--text-muted);"></i>
+            <h4 style="margin-top:1rem; font-weight:600;">No Resumes Yet</h4>
+            <p style="color:var(--text-secondary);">Upload a resume to get started with Advanced analysis.</p>
+            <a href="/resume/upload" class="btn btn-primary-gradient px-5">Upload Resume</a>
+        </div>
+        {% endif %}
+    </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/search.js') }}"></script>
+<style>.resume-card:hover { transform:translateY(-3px); box-shadow:0 12px 30px rgba(79,70,229,0.15) !important; }</style>
+{% endblock %}

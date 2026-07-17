@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}Resume— Resume Screening & Recruitment Intelligence{% endblock %}
+
+{% block body %}
+<!-- HERO SECTION -->
+<div style="min-height:100vh; display:flex; flex-direction:column;">
+    <nav class="navbar navbar-expand-lg fixed-top" style="background:transparent; backdrop-filter:blur(12px); border-bottom:1px solid rgba(255,255,255,0.05);">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="/" style="font-weight:700; font-size:1.35rem;">
+                <i class="bi bi-cpu text-gradient" style="font-size:1.5rem;"></i>
+                <span class="text-gradient">ResumeAI</span>
+            </a>
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn btn-link p-0 border-0" onclick="toggleTheme()" style="color:var(--text-secondary); font-size:1.2rem;">
+                    <i id="theme-icon" class="bi bi-sun-fill"></i>
+                </button>
+                <a href="/auth/login" class="btn btn-outline-light btn-sm px-4" style="border-color:var(--card-border); color:var(--text-secondary);">Login</a>
+                <a href="/auth/register" class="btn btn-primary-gradient btn-sm px-4">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section style="flex:1; display:flex; align-items:center; padding:120px 0 80px; position:relative; overflow:hidden;">
+        <!-- Animated background blobs -->
+        <div style="position:absolute; top:-20%; left:-10%; width:600px; height:600px; background:radial-gradient(circle, rgba(79,70,229,0.18) 0%, transparent 70%); border-radius:50%; animation:float 6s ease-in-out infinite;"></div>
+        <div style="position:absolute; bottom:-10%; right:-5%; width:500px; height:500px; background:radial-gradient(circle, rgba(6,182,212,0.12) 0%, transparent 70%); border-radius:50%; animation:float 8s ease-in-out infinite reverse;"></div>
+
+        <div class="container text-center">
+            <div class="mb-4">
+                <span style="background:rgba(79,70,229,0.15); color:#818cf8; padding:6px 16px; border-radius:50px; font-size:0.8rem; font-weight:600; letter-spacing:0.05em; border:1px solid rgba(79,70,229,0.3);">
+                    <i class="bi bi-stars me-1"></i>AI-POWERED RECRUITMENT
+                </span>
+            </div>
+            <h1 style="font-size:clamp(2.5rem,6vw,4.5rem); font-weight:800; line-height:1.1; margin-bottom:1.5rem;">
+                Hire Smarter with<br>
+                <span class="text-gradient">Artificial Intelligence</span>
+            </h1>
+            <p style="font-size:1.2rem; color:var(--text-secondary); max-width:600px; margin:0 auto 2.5rem;">
+                Upload resumes, parse skills automatically, rank candidates by job-fit score, and gain data-driven hiring insights — all in one platform.
+            </p>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <a href="/auth/register" class="btn btn-primary-gradient btn-lg px-5 py-3" style="font-weight:600;">
+                    <i class="bi bi-rocket-takeoff me-2"></i>Start for Free
+                </a>
+                <a href="#features" class="btn btn-outline-light btn-lg px-5 py-3" style="border-color:var(--card-border); color:var(--text-secondary);">
+                    <i class="bi bi-play-circle me-2"></i>See How It Works
+                </a>
+            </div>
+
+            <!-- Trust badges -->
+            <div class="mt-5 d-flex justify-content-center gap-4 flex-wrap">
+                <div style="color:var(--text-muted); font-size:0.82rem;"><i class="bi bi-shield-check me-1 text-success"></i>SOC 2 Ready</div>
+                <div style="color:var(--text-muted); font-size:0.82rem;"><i class="bi bi-lock me-1 text-primary"></i>GDPR Compliant</div>
+                <div style="color:var(--text-muted); font-size:0.82rem;"><i class="bi bi-cpu me-1" style="color:#06b6d4;"></i>NLP + ML Engine</div>
+                <div style="color:var(--text-muted); font-size:0.82rem;"><i class="bi bi-graph-up me-1 text-warning"></i>Real-time Analytics</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Banner -->
+    <section style="background:var(--bg-secondary); border-top:1px solid var(--card-border); border-bottom:1px solid var(--card-border); padding:2.5rem 0;">
+        <div class="container">
+            <div class="row text-center g-4">
+                <div class="col-6 col-md-3">
+                    <div style="font-size:2.2rem; font-weight:800;" class="text-gradient">500+</div>
+                    <div style="color:var(--text-muted); font-size:0.85rem;">Skills Tracked</div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div style="font-size:2.2rem; font-weight:800;" class="text-gradient">95%</div>
+                    <div style="color:var(--text-muted); font-size:0.85rem;">Parse Accuracy</div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div style="font-size:2.2rem; font-weight:800;" class="text-gradient">3s</div>
+                    <div style="color:var(--text-muted); font-size:0.85rem;">Resume Analysis</div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div style="font-size:2.2rem; font-weight:800;" class="text-gradient">PDF+DOCX</div>
+                    <div style="color:var(--text-muted); font-size:0.85rem;">File Formats</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" style="padding:5rem 0;">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 style="font-size:2.2rem; font-weight:700;">Everything You Need to Hire Better</h2>
+                <p style="color:var(--text-secondary); max-width:500px; margin:0 auto;">From resume parsing to candidate ranking, our ML-driven platform handles the heavy lifting.</p>
+            </div>
+            <div class="row g-4">
+                {% set features = [
+                    ('bi-file-earmark-text', 'primary', 'Smart Resume Parsing', 'Extracts skills, experience, education, and contact info from PDF and DOCX files using NLP and named entity recognition.'),
+                    ('bi-bullseye', 'accent', 'ATS Score Matching', 'Calculates a compatibility score between each candidate and job description using TF-IDF and semantic similarity.'),
+                    ('bi-bar-chart-line', 'success', 'Recruitment Analytics', 'Interactive dashboards showing skill gaps, hiring trends, score distributions, and department-level insights.'),
+                    ('bi-trophy', 'warning', 'Candidate Ranking', 'Automatically ranks candidates by fit score with explainable breakdowns per skill category.'),
+                    ('bi-search', 'secondary', 'Smart Search', 'Full-text search across all resumes with real-time filtering by skills, experience level, and ATS score range.'),
+                    ('bi-robot', 'primary', 'System Recommendations', 'ML model predicts hire probability and surfaces top candidates with SHAP-based feature importance explanations.'),
+                ] %}
+                {% for icon, color, title, desc in features %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="glass-card p-4 h-100 feature-card" style="transition: transform 0.3s, box-shadow 0.3s;">
+                        <div style="width:48px;height:48px;border-radius:12px;background:var(--{{ color }}-gradient, var(--primary-gradient));display:flex;align-items:center;justify-content:center;margin-bottom:1.2rem;">
+                            <i class="bi {{ icon }}" style="font-size:1.4rem;color:#fff;"></i>
+                        </div>
+                        <h5 style="font-weight:600; margin-bottom:0.5rem;">{{ title }}</h5>
+                        <p style="color:var(--text-secondary); font-size:0.9rem; margin:0;">{{ desc }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section style="padding:5rem 0; background:var(--bg-secondary); border-top:1px solid var(--card-border);">
+        <div class="container text-center">
+            <h2 style="font-size:2.5rem; font-weight:800; margin-bottom:1rem;">Ready to transform your hiring?</h2>
+            <p style="color:var(--text-secondary); max-width:480px; margin:0 auto 2rem;">Join recruiters who use Resumeto make faster, data-backed hiring decisions.</p>
+            <a href="/auth/register" class="btn btn-primary-gradient btn-lg px-5 py-3" style="font-weight:600;">
+                <i class="bi bi-rocket-takeoff me-2"></i>Get Started Free
+            </a>
+        </div>
+    </section>
+
+    {% include 'components/_footer.html' %}
+</div>
+
+<style>
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-20px)} }
+.feature-card:hover { transform:translateY(-4px); box-shadow:0 20px 40px rgba(79,70,229,0.2) !important; }
+</style>
+{% endblock %}

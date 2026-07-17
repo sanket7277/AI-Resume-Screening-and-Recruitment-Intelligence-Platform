@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block title %}Create Account — ResumeAI{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">{% endblock %}
+
+{% block body %}
+<div class="auth-wrapper">
+    <div class="auth-card glass-card" style="max-width:500px;">
+        <div class="text-center mb-4">
+            <i class="bi bi-cpu text-gradient" style="font-size:2.5rem;"></i>
+            <h2 style="font-weight:800; margin-top:0.5rem;">Create Account</h2>
+            <p style="color:var(--text-secondary); font-size:0.9rem;">Join Resume— it's completely free</p>
+        </div>
+
+        {% include 'components/_flash_messages.html' %}
+
+        <form method="POST" action="/auth/register" novalidate>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label" style="color:var(--text-secondary); font-size:0.85rem; font-weight:500;">First Name</label>
+                    <div class="input-group-custom">
+                        <i class="bi bi-person input-icon"></i>
+                        <input type="text" name="first_name" class="form-control input-custom" placeholder="Jane" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" style="color:var(--text-secondary); font-size:0.85rem; font-weight:500;">Last Name</label>
+                    <input type="text" name="last_name" class="form-control input-custom" placeholder="Doe" required>
+                </div>
+            </div>
+            <div class="mb-3 mt-3">
+                <label class="form-label" style="color:var(--text-secondary); font-size:0.85rem; font-weight:500;">Username</label>
+                <div class="input-group-custom">
+                    <i class="bi bi-at input-icon"></i>
+                    <input type="text" name="username" class="form-control input-custom" placeholder="janedoe" required>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" style="color:var(--text-secondary); font-size:0.85rem; font-weight:500;">Email Address</label>
+                <div class="input-group-custom">
+                    <i class="bi bi-envelope input-icon"></i>
+                    <input type="email" name="email" class="form-control input-custom" placeholder="you@company.com" required>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" style="color:var(--text-secondary); font-size:0.85rem; font-weight:500;">Account Type</label>
+                <select name="role" class="form-select input-custom" required>
+                    <option value="candidate">Job Seeker / Candidate</option>
+                    <option value="recruiter">Recruiter / HR Manager</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" style="color:var(--text-secondary); font-size:0.85rem; font-weight:500;">Password</label>
+                <div class="input-group-custom">
+                    <i class="bi bi-lock input-icon"></i>
+                    <input type="password" name="password" id="reg-password" class="form-control input-custom" placeholder="Min 8 characters" required>
+                    <button type="button" class="btn-toggle-pw" onclick="toggleRegPw()" tabindex="-1">
+                        <i class="bi bi-eye" id="reg-pw-eye"></i>
+                    </button>
+                </div>
+                <!-- Password strength bar -->
+                <div class="mt-2">
+                    <div style="height:4px;background:var(--bg-tertiary);border-radius:2px;overflow:hidden;">
+                        <div id="pw-strength-bar" style="height:100%;width:0%;transition:width 0.3s, background 0.3s;border-radius:2px;"></div>
+                    </div>
+                    <small id="pw-strength-text" style="color:var(--text-muted); font-size:0.75rem;"></small>
+                </div>
+            </div>
+            <div class="mb-4">
+                <label class="form-label" style="color:var(--text-secondary); font-size:0.85rem; font-weight:500;">Confirm Password</label>
+                <div class="input-group-custom">
+                    <i class="bi bi-lock-fill input-icon"></i>
+                    <input type="password" name="password_confirm" class="form-control input-custom" placeholder="Re-enter password" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary-gradient w-100 py-2" style="font-weight:600;">
+                <i class="bi bi-person-plus me-2"></i>Create Account
+            </button>
+        </form>
+
+        <hr style="border-color:var(--card-border); margin:1.5rem 0;">
+        <p class="text-center" style="color:var(--text-secondary); font-size:0.88rem; margin:0;">
+            Already have an account? <a href="/auth/login" style="color:var(--primary); font-weight:600;">Sign in</a>
+        </p>
+    </div>
+</div>
+
+<script>
+function toggleRegPw() {
+    var f = document.getElementById('reg-password');
+    var icon = document.getElementById('reg-pw-eye');
+    f.type = f.type === 'password' ? 'text' : 'password';
+    icon.className = f.type === 'password' ? 'bi bi-eye' : 'bi bi-eye-slash';
+}
+
+document.getElementById('reg-password').addEventListener('input', function() {
+    var pw = this.value, score = 0;
+    if (pw.length >= 8) score++;
+    if (/[A-Z]/.test(pw)) score++;
+    if (/[0-9]/.test(pw)) score++;
+    if (/[^A-Za-z0-9]/.test(pw)) score++;
+    var colors = ['', '#ef4444', '#f97316', '#f59e0b', '#10b981'];
+    var labels = ['', 'Weak', 'Fair', 'Good', 'Strong'];
+    var bar = document.getElementById('pw-strength-bar');
+    var text = document.getElementById('pw-strength-text');
+    bar.style.width = (score * 25) + '%';
+    bar.style.background = colors[score] || '';
+    text.textContent = pw.length > 0 ? labels[score] || '' : '';
+    text.style.color = colors[score] || '';
+});
+</script>
+{% endblock %}

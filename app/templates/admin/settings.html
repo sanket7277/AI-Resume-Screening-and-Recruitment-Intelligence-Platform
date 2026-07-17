@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Platform Settings — ResumeAdmin{% endblock %}
+
+{% block body %}
+<div class="app-container" style="display:flex; padding-top:70px;">
+    {% include 'components/_sidebar.html' %}
+    <main class="main-content" style="flex:1; padding:2rem;">
+        <div class="mb-4">
+            <h1 style="font-size:1.5rem; font-weight:700; margin:0;">Platform Settings</h1>
+            <p style="color:var(--text-muted); margin:0; font-size:0.85rem;">Configuration snapshot &amp; environment info</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="glass-card p-4">
+                    <h6 style="font-weight:600; margin-bottom:1.5rem;"><i class="bi bi-gear me-2 text-primary"></i>Server Configuration</h6>
+                    <table class="table table-borderless mb-0" style="color:var(--text-secondary); font-size:0.88rem;">
+                        {% for key, val in config.items() %}
+                        <tr style="border-bottom:1px solid var(--card-border);">
+                            <td style="color:var(--text-muted); padding:10px 0; font-weight:500;">{{ key }}</td>
+                            <td style="font-family:'JetBrains Mono',monospace; font-size:0.8rem;">{{ val }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="glass-card p-4 mb-3">
+                    <h6 style="font-weight:600; margin-bottom:1rem;"><i class="bi bi-heart-pulse me-2 text-success"></i>System Health</h6>
+                    <a href="/admin/api/health" target="_blank" class="btn btn-outline-success btn-sm">
+                        <i class="bi bi-box-arrow-up-right me-1"></i>Check Health API
+                    </a>
+                </div>
+                <div class="glass-card p-4">
+                    <h6 style="font-weight:600; margin-bottom:1rem;"><i class="bi bi-database me-2" style="color:#f59e0b;"></i>Database Actions</h6>
+                    <p style="color:var(--text-secondary); font-size:0.85rem;">Run the seed script to populate demo data.</p>
+                    <code style="background:var(--bg-tertiary); padding:8px 12px; border-radius:6px; font-size:0.82rem; display:block; color:#10b981;">python scripts/seed_db.py</code>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

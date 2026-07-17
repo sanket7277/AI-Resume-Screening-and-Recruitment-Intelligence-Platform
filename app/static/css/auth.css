@@ -1,0 +1,111 @@
+/* 
+   RecruitIQ - Authentication pages styles
+*/
+
+.auth-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 100px);
+    padding: 2rem 1rem;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 480px;
+    padding: 2.5rem;
+    box-shadow: var(--shadow-lg);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-logo {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.auth-subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+/* Password strength dynamic UI */
+.password-strength-bar {
+    height: 4px;
+    background-color: var(--card-border);
+    margin-top: 0.5rem;
+    border-radius: 2px;
+    overflow: hidden;
+    transition: all var(--transition-speed);
+}
+
+.password-strength-fill {
+    height: 100%;
+    width: 0%;
+    background-color: var(--danger);
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.auth-footer a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Role Selector grid design */
+.role-select-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.role-select-box {
+    border: 1px solid var(--card-border);
+    background: transparent;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition-speed);
+}
+
+.role-select-box input[type="radio"] {
+    display: none;
+}
+
+.role-select-box:hover {
+    border-color: var(--primary);
+    background: rgba(79, 70, 229, 0.05);
+}
+
+.role-select-box.active {
+    border-color: var(--primary);
+    background: rgba(79, 70, 229, 0.1);
+    box-shadow: var(--shadow-glow);
+}
+
+.role-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    display: block;
+}

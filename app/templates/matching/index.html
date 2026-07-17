@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Matching Hub — ResumeAI{% endblock %}
+
+{% block body %}
+<div class="app-container" style="display:flex; padding-top:70px;">
+    {% include 'components/_sidebar.html' %}
+    <main class="main-content" style="flex:1; padding:2rem;">
+        <div class="mb-4">
+            <h1 style="font-size:1.5rem; font-weight:700; margin:0;">Matching Hub</h1>
+            <p style="color:var(--text-muted); margin:0; font-size:0.85rem;">Run the matching engine against job descriptions</p>
+        </div>
+
+        {% include 'components/_flash_messages.html' %}
+
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="glass-card p-4">
+                    <h6 style="font-weight:600; margin-bottom:1.5rem;"><i class="bi bi-play-circle me-2 text-primary"></i>Run Matching Engine</h6>
+                    <form method="POST" action="/matching/run">
+                        <div class="mb-3">
+                            <label class="form-label" style="color:var(--text-secondary); font-size:0.85rem; font-weight:500;">Select Job Position</label>
+                            <select name="job_id" class="form-select input-custom" required>
+                                <option value="" disabled selected>Choose a job...</option>
+                                {% for job in jobs %}
+                                <option value="{{ job.id }}">{{ job.title }} — {{ job.company or 'N/A' }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label" style="color:var(--text-secondary); font-size:0.85rem; font-weight:500;">Match Against</label>
+                            <div class="d-flex gap-3">
+                                <div class="glass-card p-3 flex-grow-1 text-center" style="cursor:pointer; background:rgba(79,70,229,0.1); border:1px solid rgba(79,70,229,0.3);">
+                                    <i class="bi bi-people" style="font-size:1.5rem; color:#818cf8;"></i>
+                                    <div style="font-size:0.82rem; color:var(--text-secondary); margin-top:0.3rem;">All Analyzed Resumes</div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary-gradient w-100 py-2" style="font-weight:600;">
+                            <i class="bi bi-lightning-fill me-2"></i>Run Matching Engine
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="glass-card p-4">
+                    <h6 style="font-weight:600; margin-bottom:1rem;"><i class="bi bi-clock-history me-2" style="color:#06b6d4;"></i>Recent Match Runs</h6>
+                    {% if recent_matches %}
+                    {% for m in recent_matches %}
+                    {% set j = m.job %}
+                    <a href="/matching/results/{{ m.job_id }}" class="d-block text-decoration-none mb-2">
+                        <div class="glass-card p-3" style="background:var(--bg-tertiary);">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div style="font-weight:500; font-size:0.88rem; color:var(--text-primary);">{{ j.title if j else 'Unknown Job' }}</div>
+                                    <small style="color:var(--text-muted);">{{ m.created_at.strftime('%b %d, %Y') if m.created_at }}</small>
+                                </div>
+                                {% set score = m.overall_score|float %}
+                                <span class="badge {% if score >= 75 %}bg-success{% elif score >= 50 %}bg-warning text-dark{% else %}bg-danger{% endif %}">{{ '%.0f'|format(score) }}%</span>
+                            </div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-bullseye" style="font-size:2rem; color:var(--text-muted);"></i>
+                        <p style="color:var(--text-muted); font-size:0.88rem; margin-top:0.5rem;">No match runs yet.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Match Detail — ResumeAI{% endblock %}
+
+{% block body %}
+<div class="app-container" style="display:flex; padding-top:70px;">
+    {% include 'components/_sidebar.html' %}
+    <main class="main-content" style="flex:1; padding:2rem;">
+        <div class="mb-3">
+            <a href="/matching/results/{{ job.id }}" style="color:var(--text-muted); text-decoration:none; font-size:0.85rem;"><i class="bi bi-arrow-left me-1"></i>Rankings for {{ job.title }}</a>
+        </div>
+
+        <!-- Header -->
+        <div class="glass-card p-4 mb-4">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 style="font-size:1.4rem; font-weight:800; margin:0;">{{ resume.candidate_name }}</h1>
+                    <p style="color:var(--text-muted); margin:0.3rem 0 0;">vs <strong style="color:var(--text-secondary);">{{ job.title }}</strong> @ {{ job.company or '' }}</p>
+                </div>
+                <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                    <div id="ats-gauge" style="display:inline-block;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Radar Chart -->
+            <div class="col-lg-5">
+                <div class="glass-card p-4 mb-3">
+                    <h6 style="font-weight:600; margin-bottom:1rem;">Score Breakdown</h6>
+                    <div style="height:280px;"><canvas id="radarChart"></canvas></div>
+                </div>
+
+                {% if match.recommendation %}
+                <div class="glass-card p-4" style="border-left:3px solid #4f46e5;">
+                    <h6 style="font-weight:600; margin-bottom:0.5rem;"><i class="bi bi-robot me-2 text-primary"></i>System Recommendation</h6>
+                    <p style="color:var(--text-secondary); font-size:0.9rem; margin:0;">{{ match.recommendation }}</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Skills Breakdown -->
+            <div class="col-lg-7">
+                <div class="glass-card p-4 mb-3">
+                    <h6 style="font-weight:600; margin-bottom:1rem;">Skill Analysis</h6>
+                    <div id="skill-comparison-container"></div>
+                </div>
+
+                <!-- Score Table -->
+                <div class="glass-card p-4">
+                    <h6 style="font-weight:600; margin-bottom:1rem;">Detailed Scores</h6>
+                    <table class="table table-borderless mb-0" style="color:var(--text-secondary); font-size:0.88rem;">
+                        <thead><tr style="color:var(--text-muted); font-size:0.75rem; text-transform:uppercase;">
+                            <th>Component</th><th>Score</th><th>Weight</th>
+                        </tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>Skill Match</td>
+                                <td><strong>{{ '%.1f'|format(match.skill_match_pct|float) }}%</strong></td>
+                                <td><div class="progress" style="height:6px;width:100px;background:var(--bg-tertiary);"><div class="progress-bar" style="width:{{ match.skill_match_pct|float }}%;background:#4f46e5;"></div></div></td>
+                            </tr>
+                            <tr>
+                                <td>Semantic Similarity</td>
+                                <td><strong>{{ '%.3f'|format(match.semantic_similarity|float) }}</strong></td>
+                                <td><div class="progress" style="height:6px;width:100px;background:var(--bg-tertiary);"><div class="progress-bar" style="width:{{ (match.semantic_similarity|float * 100)|round }}%;background:#06b6d4;"></div></div></td>
+                            </tr>
+                            <tr>
+                                <td>Keyword Coverage</td>
+                                <td><strong>{{ '%.1f'|format(match.keyword_coverage|float) }}%</strong></td>
+                                <td><div class="progress" style="height:6px;width:100px;background:var(--bg-tertiary);"><div class="progress-bar" style="width:{{ match.keyword_coverage|float }}%;background:#10b981;"></div></div></td>
+                            </tr>
+                            <tr>
+                                <td>Experience Match</td>
+                                <td><strong>{{ '%.1f'|format(match.experience_match|float) }}%</strong></td>
+                                <td><div class="progress" style="height:6px;width:100px;background:var(--bg-tertiary);"><div class="progress-bar" style="width:{{ match.experience_match|float }}%;background:#f59e0b;"></div></div></td>
+                            </tr>
+                            <tr>
+                                <td>Education Match</td>
+                                <td><strong>{{ '%.1f'|format(match.education_match|float) }}%</strong></td>
+                                <td><div class="progress" style="height:6px;width:100px;background:var(--bg-tertiary);"><div class="progress-bar" style="width:{{ match.education_match|float }}%;background:#8b5cf6;"></div></div></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+<script src="{{ url_for('static', filename='js/matching.js') }}"></script>
+<script>
+renderATSGauge('ats-gauge', {{ match.overall_score|float }});
+renderSkillComparison('skill-comparison-container',
+    {{ (match.matched_skills or [])|tojson }},
+    {{ (match.missing_skills or [])|tojson }},
+    {{ (match.extra_skills or [])|tojson }}
+);
+renderScoreBreakdown('radarChart', {
+    skill_match_pct:  {{ match.skill_match_pct|float }},
+    experience_match: {{ match.experience_match|float }},
+    education_match:  {{ match.education_match|float }},
+    semantic_similarity: {{ match.semantic_similarity|float }},
+    keyword_coverage: {{ match.keyword_coverage|float }}
+});
+</script>
+{% endblock %}

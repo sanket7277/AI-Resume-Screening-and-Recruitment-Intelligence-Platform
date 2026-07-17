@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Post a Job — ResumeAI{% endblock %}
+
+{% block body %}
+<div class="app-container" style="display:flex; padding-top:70px;">
+    {% include 'components/_sidebar.html' %}
+    <main class="main-content" style="flex:1; padding:2rem;">
+        <div class="mb-4">
+            <a href="/jobs" style="color:var(--text-muted); text-decoration:none; font-size:0.85rem;"><i class="bi bi-arrow-left me-1"></i>All Jobs</a>
+            <h1 style="font-size:1.5rem; font-weight:700; margin:0.5rem 0 0;">Post a New Job</h1>
+        </div>
+
+        {% include 'components/_flash_messages.html' %}
+
+        <form method="POST" action="/jobs/create">
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="glass-card p-4 mb-3">
+                        <h6 style="font-weight:600; margin-bottom:1.5rem;">Basic Information</h6>
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                <label class="form-label form-label-custom">Job Title *</label>
+                                <input type="text" name="title" class="form-control input-custom" placeholder="e.g. Senior Data Scientist" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label form-label-custom">Employment Type</label>
+                                <select name="employment_type" class="form-select input-custom">
+                                    <option>Full-time</option>
+                                    <option>Part-time</option>
+                                    <option>Contract</option>
+                                    <option>Internship</option>
+                                    <option>Remote</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label form-label-custom">Company</label>
+                                <input type="text" name="company" class="form-control input-custom" placeholder="Company name">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label form-label-custom">Department</label>
+                                <input type="text" name="department" class="form-control input-custom" placeholder="e.g. Engineering">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label form-label-custom">Location</label>
+                                <input type="text" name="location" class="form-control input-custom" placeholder="e.g. San Francisco, CA or Remote">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label form-label-custom">Salary Min ($)</label>
+                                <input type="number" name="salary_min" class="form-control input-custom" placeholder="e.g. 80000">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label form-label-custom">Salary Max ($)</label>
+                                <input type="number" name="salary_max" class="form-control input-custom" placeholder="e.g. 120000">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-4 mb-3">
+                        <h6 style="font-weight:600; margin-bottom:1.5rem;">Job Description</h6>
+                        <div class="mb-3">
+                            <label class="form-label form-label-custom">Full Description *</label>
+                            <textarea name="description" class="form-control input-custom" rows="6" placeholder="Describe the role, team, and what the candidate will work on..." required></textarea>
+                        </div>
+                        <div>
+                            <label class="form-label form-label-custom">Requirements & Qualifications</label>
+                            <textarea name="requirements" class="form-control input-custom" rows="5" placeholder="List required skills, experience level, education, certifications...&#10;&#10;Skills will be auto-extracted from this section."></textarea>
+                            <small style="color:var(--text-muted);">Skills will be automatically extracted from the requirements text using NLP.</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="glass-card p-4 mb-3">
+                        <h6 style="font-weight:600; margin-bottom:1.5rem;">Candidate Requirements</h6>
+                        <div class="mb-3">
+                            <label class="form-label form-label-custom">Min. Experience (years)</label>
+                            <input type="number" name="min_experience" class="form-control input-custom" value="0" min="0" max="30">
+                        </div>
+                        <div>
+                            <label class="form-label form-label-custom">Education Required</label>
+                            <select name="education_required" class="form-select input-custom">
+                                <option value="">Any</option>
+                                <option>High School / GED</option>
+                                <option>Associate's Degree</option>
+                                <option>Bachelor's Degree</option>
+                                <option>Master's Degree</option>
+                                <option>PhD / Doctorate</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-4">
+                        <h6 style="font-weight:600; margin-bottom:1rem;"><i class="bi bi-stars me-2 text-warning"></i>Skill Extraction</h6>
+                        <p style="color:var(--text-secondary); font-size:0.85rem;">When you post this job, our NLP engine will automatically identify required technical and soft skills from your requirements text and add them to the job profile.</p>
+                        <button type="submit" class="btn btn-primary-gradient w-100 py-2" style="font-weight:600;">
+                            <i class="bi bi-plus-circle me-2"></i>Post Job
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </main>
+</div>
+
+<style>
+.form-label-custom { color: var(--text-secondary); font-size: 0.85rem; font-weight: 500; margin-bottom: 0.4rem; }
+</style>
+{% endblock %}

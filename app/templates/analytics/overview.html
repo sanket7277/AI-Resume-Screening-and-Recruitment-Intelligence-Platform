@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Analytics — ResumeAI{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="app-container" style="display:flex; padding-top:70px;">
+    {% include 'components/_sidebar.html' %}
+    <main class="main-content" style="flex:1; padding:2rem;">
+        <div class="mb-4">
+            <h1 style="font-size:1.6rem; font-weight:700; margin:0;">Recruitment Analytics</h1>
+            <p style="color:var(--text-muted); margin:0; font-size:0.85rem;">Data-driven insights across your talent pipeline</p>
+        </div>
+
+        <!-- KPI Row -->
+        <div class="row g-3 mb-4">
+            {% set kpis = [
+                ('Total Resumes', total_resumes, 'bi-file-earmark-text', '#4f46e5'),
+                ('Active Jobs', total_jobs, 'bi-briefcase', '#06b6d4'),
+                ('Matches Run', total_matches, 'bi-bullseye', '#10b981'),
+                ('Avg ATS Score', avg_score|string + '%', 'bi-speedometer2', '#f59e0b'),
+            ] %}
+            {% for label, value, icon, color in kpis %}
+            <div class="col-6 col-xl-3">
+                <div class="glass-card p-3 kpi-card">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <small style="color:var(--text-muted); font-weight:500;">{{ label }}</small>
+                        <i class="bi {{ icon }}" style="color:{{ color }}; font-size:1.2rem;"></i>
+                    </div>
+                    <div style="font-size:2rem; font-weight:800;" class="text-gradient">{{ value }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Top Skills + Score Distribution -->
+        <div class="row g-3 mb-4">
+            <div class="col-lg-7">
+                <div class="glass-card p-4">
+                    <h6 style="font-weight:600; margin-bottom:1rem;">Top 20 In-Demand Skills</h6>
+                    <div style="height:320px;">
+                        <canvas id="skillsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="glass-card p-4">
+                    <h6 style="font-weight:600; margin-bottom:1rem;">ATS Score Distribution</h6>
+                    <div style="height:320px;">
+                        <canvas id="scoreDistChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Experience + Education -->
+        <div class="row g-3">
+            <div class="col-lg-6">
+                <div class="glass-card p-4">
+                    <h6 style="font-weight:600; margin-bottom:1rem;">Experience Distribution (years)</h6>
+                    <div style="height:260px;">
+                        <canvas id="expChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="glass-card p-4">
+                    <h6 style="font-weight:600; margin-bottom:1rem;">Education Level Breakdown</h6>
+                    <div style="height:260px;">
+                        <canvas id="eduChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+<script>
+var skillLabels = {{ skill_labels|safe }};
+var skillCounts = {{ skill_counts|safe }};
+var scoreLabels = {{ score_labels|safe }};
+var scoreCounts = {{ score_counts|safe }};
+var expLabels   = {{ exp_labels|safe }};
+var expCounts   = {{ exp_counts|safe }};
+var eduLabels   = {{ education_labels|safe }};
+var eduCounts   = {{ education_counts|safe }};
+
+createBarChart('skillsChart', skillLabels, skillCounts, {label: 'Candidates with skill'});
+createBarChart('scoreDistChart', scoreLabels, scoreCounts, {label: 'Candidates'});
+createBarChart('expChart', expLabels, expCounts, {label: 'Candidates'});
+createDoughnutChart('eduChart', eduLabels, eduCounts);
+</script>
+{% endblock %}

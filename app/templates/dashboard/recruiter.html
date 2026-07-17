@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block title %}Recruiter Dashboard — ResumeAI{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="app-container" style="display:flex; padding-top:70px;">
+    {% include 'components/_sidebar.html' %}
+
+    <main class="main-content" style="flex:1; padding:2rem; overflow-y:auto;">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 style="font-size:1.6rem; font-weight:700; margin:0;">Recruiter Dashboard</h1>
+                <p style="color:var(--text-muted); margin:0; font-size:0.85rem;">Manage your pipeline and top candidates</p>
+            </div>
+            <a href="/jobs/create" class="btn btn-primary-gradient btn-sm px-4">
+                <i class="bi bi-plus-lg me-1"></i>Post a Job
+            </a>
+        </div>
+
+        <!-- KPIs -->
+        <div class="row g-3 mb-4">
+            {% set kpis = [
+                ('My Jobs', stats.my_jobs, 'bi-briefcase', '#4f46e5'),
+                ('Total Candidates', stats.total_candidates, 'bi-people', '#06b6d4'),
+                ('Matches Run', stats.matches_run, 'bi-bullseye', '#10b981'),
+                ('Avg Match Score', stats.avg_score|string + '%', 'bi-speedometer2', '#f59e0b'),
+            ] %}
+            {% for label, value, icon, color in kpis %}
+            <div class="col-6 col-xl-3">
+                <div class="glass-card p-3 kpi-card">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <small style="color:var(--text-muted); font-weight:500;">{{ label }}</small>
+                        <i class="bi {{ icon }}" style="color:{{ color }}; font-size:1.2rem;"></i>
+                    </div>
+                    <div style="font-size:2rem; font-weight:800;" class="text-gradient">{{ value }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Active Jobs & Top Matches -->
+        <div class="row g-3">
+            <div class="col-lg-5">
+                <div class="glass-card p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 style="font-weight:600; margin:0;">Active Job Postings</h6>
+                        <a href="/jobs/create" class="btn btn-link btn-sm p-0" style="color:var(--primary);">+ New</a>
+                    </div>
+                    {% if my_jobs %}
+                    {% for job in my_jobs[:6] %}
+                    <a href="/jobs/{{ job.id }}" class="d-block text-decoration-none mb-2">
+                        <div class="glass-card p-3" style="background:var(--bg-tertiary);">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div style="font-weight:600; font-size:0.9rem; color:var(--text-primary);">{{ job.title }}</div>
+                                    <small style="color:var(--text-muted);">{{ job.department or 'General' }} · {{ job.location or 'Remote' }}</small>
+                                </div>
+                                <span class="badge {% if job.is_active %}bg-success{% else %}bg-secondary{% endif %}">
+                                    {{ 'Active' if job.is_active else 'Closed' }}
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-briefcase" style="font-size:2.5rem; color:var(--text-muted);"></i>
+                        <p style="color:var(--text-muted); margin-top:0.5rem; font-size:0.9rem;">No jobs posted yet.</p>
+                        <a href="/jobs/create" class="btn btn-primary-gradient btn-sm">Post Your First Job</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-lg-7">
+                <div class="glass-card p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 style="font-weight:600; margin:0;">Top Candidate Matches</h6>
+                        <a href="/matching" class="btn btn-link btn-sm p-0" style="color:var(--primary);">Run Matching</a>
+                    </div>
+                    {% if top_matches %}
+                    <div class="table-responsive">
+                        <table class="table table-borderless align-middle mb-0" style="color:var(--text-primary);">
+                            <thead>
+                                <tr style="color:var(--text-muted); font-size:0.78rem; text-transform:uppercase; letter-spacing:0.05em;">
+                                    <th>Candidate</th>
+                                    <th>Job</th>
+                                    <th>ATS Score</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for match in top_matches %}
+                                {% set resume = match.resume %}
+                                {% set job = match.job %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div style="width:30px;height:30px;border-radius:50%;background:var(--primary-gradient);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.75rem;flex-shrink:0;">
+                                                {{ (resume.candidate_name or 'U')[0]|upper }}
+                                            </div>
+                                            <div>
+                                                <div style="font-weight:500; font-size:0.85rem;">{{ resume.candidate_name if resume else 'Unknown' }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><small style="color:var(--text-muted);">{{ job.title if job else '—' }}</small></td>
+                                    <td>
+                                        {% set score = match.overall_score|float %}
+                                        <span class="badge {% if score >= 75 %}bg-success{% elif score >= 50 %}bg-warning{% else %}bg-danger{% endif %}">
+                                            {{ '%.0f'|format(score) }}%
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="/matching/detail/{{ match.id }}" class="btn btn-link btn-sm p-0" style="color:var(--primary);">
+                                            <i class="bi bi-arrow-right"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-bullseye" style="font-size:2.5rem; color:var(--text-muted);"></i>
+                        <p style="color:var(--text-muted); margin-top:0.5rem; font-size:0.9rem;">No match results yet.</p>
+                        <a href="/matching" class="btn btn-primary-gradient btn-sm">Run Matching Engine</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
+{% block extra_js %}<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>{% endblock %}
