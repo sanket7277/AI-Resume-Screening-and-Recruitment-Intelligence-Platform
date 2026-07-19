@@ -29,8 +29,13 @@ class DevelopmentConfig(Config):
 class ProductionConfig(Config):
     """Production configuration settings."""
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
-    # For production, we should enforce secure cookies and other settings
+
+    # Use Render DATABASE_URL if available, otherwise use SQLite
+    SQLALCHEMY_DATABASE_URI = (
+        os.environ.get("DATABASE_URL")
+        or "sqlite:///recruitment.db"
+    )
+
     SESSION_COOKIE_SECURE = True
     REMEMBER_COOKIE_SECURE = True
 
