@@ -23,14 +23,14 @@ share/python-wheels/
 MANIFEST
 
 # Flask-related
-instance/
+#instance/
 .webassets-cache
 .env
 .flaskenv
 
 # Database
-*.db
-*.sqlite3
+#*.db
+#*.sqlite3
 
 # Uploads
 app/static/uploads/*
